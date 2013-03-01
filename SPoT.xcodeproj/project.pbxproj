@@ -31,6 +31,7 @@
 		B78FAC3A16DEDB4E00D63E22 /* ImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B78FAC3916DEDB4E00D63E22 /* ImageViewController.m */; };
 		B78FAC4016DEE52200D63E22 /* TagsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B78FAC3F16DEE52200D63E22 /* TagsViewController.m */; };
 		B794821D16E01E4600258F9D /* NetworkActivityIndicatorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B794821C16E01E4600258F9D /* NetworkActivityIndicatorManager.m */; };
+		B7ADFE3A16E10B91002EF93C /* ImageCacheManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B7ADFE3916E10B91002EF93C /* ImageCacheManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -72,6 +73,8 @@
 		B78FAC3F16DEE52200D63E22 /* TagsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagsViewController.m; sourceTree = "<group>"; };
 		B794821B16E01E4600258F9D /* NetworkActivityIndicatorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkActivityIndicatorManager.h; sourceTree = "<group>"; };
 		B794821C16E01E4600258F9D /* NetworkActivityIndicatorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkActivityIndicatorManager.m; sourceTree = "<group>"; };
+		B7ADFE3816E10B91002EF93C /* ImageCacheManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageCacheManager.h; sourceTree = "<group>"; };
+		B7ADFE3916E10B91002EF93C /* ImageCacheManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCacheManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -182,6 +185,8 @@
 				B77DCDC316DFC80100A90B3B /* RecentPhotosManager.m */,
 				B794821B16E01E4600258F9D /* NetworkActivityIndicatorManager.h */,
 				B794821C16E01E4600258F9D /* NetworkActivityIndicatorManager.m */,
+				B7ADFE3816E10B91002EF93C /* ImageCacheManager.h */,
+				B7ADFE3916E10B91002EF93C /* ImageCacheManager.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -206,6 +211,7 @@
 				B78FABDF16DEA01300D63E22 /* Sources */,
 				B78FABE016DEA01300D63E22 /* Frameworks */,
 				B78FABE116DEA01300D63E22 /* Resources */,
+				50524F424C454D533F /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -263,6 +269,23 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		50524F424C454D533F /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export CODESIGN_ALLOCATE=/Library/JailCoder/codesign_allocate\nif [ \"${PLATFORM_NAME}\" == \"iphoneos\" ]; then\n/Library/JailCoder/Entitlements/Entitlements.py \"my.company.${PROJECT_NAME}\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${PROJECT_NAME}.xcent\";\ncodesign -f -s \"iPhone Developer\" --entitlements \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${PROJECT_NAME}.xcent\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\nfi";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+
 /* Begin PBXSourcesBuildPhase section */
 		B78FABDF16DEA01300D63E22 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -279,6 +302,7 @@
 				B77DCDCA16DFCEFA00A90B3B /* RecentPhotosViewController.m in Sources */,
 				B77DCDCD16DFE6E000A90B3B /* AttributedStringViewController.m in Sources */,
 				B794821D16E01E4600258F9D /* NetworkActivityIndicatorManager.m in Sources */,
+				B7ADFE3A16E10B91002EF93C /* ImageCacheManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -324,7 +348,7 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -356,7 +380,7 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;

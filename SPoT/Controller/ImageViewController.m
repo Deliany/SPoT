@@ -9,6 +9,7 @@
 #import "ImageViewController.h"
 #import "AttributedStringViewController.h"
 #import "NetworkActivityIndicatorManager.h"
+#import "ImageCacheManager.h"
 
 @interface ImageViewController () <UIScrollViewDelegate>
 
@@ -106,7 +107,6 @@
     return self.imageView;
 }
 
-
 - (void)resetImage
 {
     if (self.scrollView) {
@@ -118,9 +118,20 @@
         
         dispatch_queue_t imageLoadQueue = dispatch_queue_create("image downloading", NULL);
         dispatch_async(imageLoadQueue, ^{
-            [NetworkActivityIndicatorManager networkActivityIndicatorShouldShow];            
-            NSData *imageData = [[NSData alloc] initWithContentsOfURL:self.imageURL];            
-            [NetworkActivityIndicatorManager networkActivityIndicatorShouldHide];
+            NSData *imageData;
+            NSString *fileName = [[self.imageURL pathComponents] lastObject];
+            
+            NSData *dataFromCache = [ImageCacheManager getImageFromCacheWithName:fileName];
+            if (dataFromCache) {
+                imageData = dataFromCache;
+            }
+            else {
+                [NetworkActivityIndicatorManager networkActivityIndicatorShouldShow];
+                imageData = [[NSData alloc] initWithContentsOfURL:self.imageURL];
+                [NetworkActivityIndicatorManager networkActivityIndicatorShouldHide];
+                
+                [ImageCacheManager writeImageToCacheWithData:imageData andFileName:fileName];
+            }
             
             UIImage *image = [[UIImage alloc] initWithData:imageData];
             if (self.imageURL == savedImageURL) {
@@ -163,6 +174,10 @@
 
 - (void)viewDidLayoutSubviews
 {
+    if (self.scrollView.bounds.size.width == 0 || self.scrollView.bounds.size.height) {
+        return;
+    }
+    
     CGFloat scaleWidth = self.scrollView.bounds.size.width / self.imageView.bounds.size.width;
     CGFloat scaleHeight = self.scrollView.bounds.size.height / self.imageView.bounds.size.height;
     
