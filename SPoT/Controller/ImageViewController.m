@@ -8,6 +8,7 @@
 
 #import "ImageViewController.h"
 #import "AttributedStringViewController.h"
+#import "NetworkActivityIndicatorManager.h"
 
 @interface ImageViewController () <UIScrollViewDelegate>
 
@@ -111,9 +112,10 @@
         NSURL *savedImageURL = self.imageURL;
         
         [self.activityIndicator startAnimating];
+        [NetworkActivityIndicatorManager networkActivityIndicatorShouldShow];
+        
         dispatch_queue_t imageLoadQueue = dispatch_queue_create("image downloading", NULL);
         dispatch_async(imageLoadQueue, ^{
-            
             NSData *imageData = [[NSData alloc] initWithContentsOfURL:self.imageURL];
             UIImage *image = [[UIImage alloc] initWithData:imageData];
             if (self.imageURL == savedImageURL) {
@@ -130,6 +132,8 @@
                     [self.activityIndicator stopAnimating];
                 });
             }
+            
+            [NetworkActivityIndicatorManager networkActivityIndicatorShouldHide];
         });
         
     }
