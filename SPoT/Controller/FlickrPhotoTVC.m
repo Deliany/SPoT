@@ -31,14 +31,19 @@
     self.splitViewController.delegate = self;
 }
 
-- (void)splitViewController:(UISplitViewController *)svc willHideViewController:(UIViewController *)aViewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)pc
+- (void)splitViewController:(UISplitViewController *)svc
+     willHideViewController:(UIViewController *)aViewController
+          withBarButtonItem:(UIBarButtonItem *)barButtonItem
+       forPopoverController:(UIPopoverController *)pc
 {
     // add the bar button from its toolbar
     barButtonItem.title = @"Images";
     [[self splitViewDetailWithBarButtonItem] setSplitViewBarButtonItem:barButtonItem];
 }
 
-- (void)splitViewController:(UISplitViewController *)sender willShowViewController:(UIViewController *)master invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem
+- (void)splitViewController:(UISplitViewController *)sender
+     willShowViewController:(UIViewController *)master
+  invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem
 {
     // remove the bar button from its toolbar
     [[self splitViewDetailWithBarButtonItem] setSplitViewBarButtonItem:nil];
@@ -51,8 +56,12 @@
 - (id)splitViewDetailWithBarButtonItem
 {
     id detail = [self.splitViewController.viewControllers lastObject];
+    
     if (![detail respondsToSelector:@selector(setSplitViewBarButtonItem:)] ||
-        ![detail respondsToSelector:@selector(splitViewBarButtonItem)]) detail = nil;
+        ![detail respondsToSelector:@selector(splitViewBarButtonItem)])
+    {
+        detail = nil;
+    }
     return detail;
 }
 
@@ -65,12 +74,14 @@
     }
 }
 
+#define SHOW_IMAGE_SEGUE_ID @"Show Image"
+
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([sender isKindOfClass:[UITableViewCell class]]) {
         NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
         if (indexPath) {
-            if ([segue.identifier isEqualToString:@"Show Image"]) {
+            if ([segue.identifier isEqualToString:SHOW_IMAGE_SEGUE_ID]) {
                 if ([segue.destinationViewController respondsToSelector:@selector(setImageURL:)]) {
                     
                     FlickrPhotoFormat format = FlickrPhotoFormatLarge;
@@ -80,6 +91,7 @@
                     }
 
                     NSURL *url = [FlickrFetcher urlForPhoto:self.photos[indexPath.row] format:FlickrPhotoFormatLarge];
+                    
                     [segue.destinationViewController performSelector:@selector(setImageURL:) withObject:url];
                     [segue.destinationViewController setTitle:[self titleForRow:indexPath.row]];
                     
@@ -106,7 +118,7 @@
 
 - (NSString *)subtitleForRow:(NSUInteger)row
 {
-    return [self.photos[row] valueForKeyPath:FLICKR_PHOTO_DESCRIPTION ]; // description because could be NSNull
+    return [self.photos[row] valueForKeyPath:FLICKR_PHOTO_DESCRIPTION];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath

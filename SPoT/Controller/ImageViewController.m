@@ -14,6 +14,7 @@
 
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (strong, nonatomic) UIImageView *imageView;
+
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *titleBarButtonItem;
 @property (strong, nonatomic) UIPopoverController *urlPopover;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
@@ -91,7 +92,9 @@
 
 - (UIImageView *)imageView
 {
-    if (!_imageView) _imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
+    if (!_imageView) {
+        _imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
+    }
     return _imageView;
 }
 
@@ -112,11 +115,13 @@
         NSURL *savedImageURL = self.imageURL;
         
         [self.activityIndicator startAnimating];
-        [NetworkActivityIndicatorManager networkActivityIndicatorShouldShow];
         
         dispatch_queue_t imageLoadQueue = dispatch_queue_create("image downloading", NULL);
         dispatch_async(imageLoadQueue, ^{
-            NSData *imageData = [[NSData alloc] initWithContentsOfURL:self.imageURL];
+            [NetworkActivityIndicatorManager networkActivityIndicatorShouldShow];            
+            NSData *imageData = [[NSData alloc] initWithContentsOfURL:self.imageURL];            
+            [NetworkActivityIndicatorManager networkActivityIndicatorShouldHide];
+            
             UIImage *image = [[UIImage alloc] initWithData:imageData];
             if (self.imageURL == savedImageURL) {
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -133,7 +138,6 @@
                 });
             }
             
-            [NetworkActivityIndicatorManager networkActivityIndicatorShouldHide];
         });
         
     }

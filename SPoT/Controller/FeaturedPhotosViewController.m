@@ -31,16 +31,17 @@
 - (void)loadPhotoForTag
 {
     [self.refreshControl beginRefreshing];
+    
     dispatch_queue_t fetchTagsQueue = dispatch_queue_create("fetching photos for tag", NULL);
     dispatch_async(fetchTagsQueue, ^{
         NSArray *photos = [FlickrFetcher photosForTag:self.tag];
         NSArray *sortedPhotos = [photos sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:FLICKR_PHOTO_TITLE ascending:YES]]];
         
+        [self.refreshControl endRefreshing];
+        
         dispatch_async(dispatch_get_main_queue(), ^{
             self.photos = sortedPhotos;
         });
-
-        [self.refreshControl endRefreshing];
     });    
 }
 

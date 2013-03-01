@@ -16,19 +16,14 @@
 
 @implementation TagsViewController
 
-- (NSArray *)tagsArray
+- (void)setTagsCountedSet:(NSCountedSet *)tagsCountedSet
 {
-    if (!_tagsArray) {
-        if (self.tagsCountedSet) {
-            NSMutableArray *tagsArr = [NSMutableArray arrayWithCapacity:[self.tagsCountedSet count]];
-            for (NSString *tag in self.tagsCountedSet) {
-                [tagsArr addObject:tag];
-            }
-            [tagsArr sortUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES]]];
-            _tagsArray = tagsArr;
-        }
-    }
-    return _tagsArray;
+    _tagsCountedSet = tagsCountedSet;
+    
+    NSArray *tagsArr = [tagsCountedSet allObjects];
+    NSArray *sortedTags = [tagsArr sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES]]];
+    
+    self.tagsArray = sortedTags;
 }
 
 - (void)viewDidLoad
@@ -46,7 +41,7 @@
         self.tagsCountedSet = [FlickrFetcher filteredTags];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [[self tableView] reloadData];
+            [self.tableView reloadData];
         });
         
         [self.refreshControl endRefreshing];
@@ -55,16 +50,18 @@
 
 #pragma mark - Segue
 
+#define FEATURED_SEGUE_ID @"Show Featured"
+
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([sender isKindOfClass:[UITableViewCell class]]) {
         NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
         if (indexPath) {
-            if ([segue.identifier isEqualToString:@"Show Featured"]) {
+            if ([segue.identifier isEqualToString:FEATURED_SEGUE_ID]) {
                 if ([segue.destinationViewController respondsToSelector:@selector(setTag:)]) {
                     NSString *tag = self.tagsArray[indexPath.row];
                     [segue.destinationViewController performSelector:@selector(setTag:) withObject:tag];
-                    [segue.destinationViewController setTitle:tag];
+                    [segue.destinationViewController setTitle:[tag capitalizedString]];
                 }
             }
         }
@@ -84,9 +81,13 @@
 {
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+
+    NSString *capitalizedTag = [[self.tagsArray objectAtIndex:indexPath.row] capitalizedString];
+    NSUInteger photosCount = [self.tagsCountedSet countForObject:[self.tagsArray objectAtIndex:indexPath.row]];
+    NSString *photosCountLabel = [NSString stringWithFormat:@"%d photo%@", photosCount, photosCount > 1 ? @"s" : @""];
     
-    cell.textLabel.text = [[self.tagsArray objectAtIndex:indexPath.row] capitalizedString];
-    cell.detailTextLabel.text = [@([self.tagsCountedSet countForObject:[self.tagsArray objectAtIndex:indexPath.row]]) stringValue];
+    cell.textLabel.text = capitalizedTag;
+    cell.detailTextLabel.text = photosCountLabel;
     
     return cell;
 }
