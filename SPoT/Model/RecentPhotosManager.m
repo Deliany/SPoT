@@ -18,6 +18,7 @@
     return photos;
 }
 
+#define MAX_RECENT_PHOTOS_COUNT 10
 
 + (void)addFlickrPhoto:(NSDictionary *)photo
 {
@@ -28,7 +29,7 @@
     else if([photos containsObject:photo]) {
         return;
     }
-    else if([photos count] >= 10) {
+    else if([photos count] >= MAX_RECENT_PHOTOS_COUNT) {
         [photos removeLastObject];
         [photos insertObject:photo atIndex:0];
     }

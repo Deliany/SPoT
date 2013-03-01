@@ -11,7 +11,5 @@
 @interface FlickrPhotoTVC : UITableViewController
 
 @property (nonatomic, strong) NSArray *photos; // of NSDictionary
-- (NSString *)titleForRow:(NSUInteger)row;
-- (NSString *)subtitleForRow:(NSUInteger)row;
 
 @end

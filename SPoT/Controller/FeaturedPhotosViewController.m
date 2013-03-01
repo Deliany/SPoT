@@ -7,6 +7,7 @@
 //
 
 #import "FeaturedPhotosViewController.h"
+#import "FlickrFetcher.h"
 
 @interface FeaturedPhotosViewController ()
 
@@ -14,16 +15,33 @@
 
 @implementation FeaturedPhotosViewController
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)setTag:(NSString *)tag
 {
-    static NSString *CellIdentifier = @"FeaturedPhotoCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    
-    // Configure the cell...
-    cell.textLabel.text = [super titleForRow:indexPath.row];
-    cell.detailTextLabel.text = [super subtitleForRow:indexPath.row];
-    
-    return cell;
+    _tag = tag;
+    [self loadPhotoForTag];
+}
+
+-(void)viewDidLoad
+{
+    [super viewDidLoad];
+    [self.refreshControl addTarget:self action:@selector(loadPhotoForTag) forControlEvents:UIControlEventValueChanged];
+    [self loadPhotoForTag];
+}
+
+- (void)loadPhotoForTag
+{
+    [self.refreshControl beginRefreshing];
+    dispatch_queue_t fetchTagsQueue = dispatch_queue_create("fetching photos for tag", NULL);
+    dispatch_async(fetchTagsQueue, ^{
+        NSArray *photos = [FlickrFetcher photosForTag:self.tag];
+        NSArray *sortedPhotos = [photos sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:FLICKR_PHOTO_TITLE ascending:YES]]];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.photos = sortedPhotos;
+        });
+
+        [self.refreshControl endRefreshing];
+    });    
 }
 
 @end

@@ -30,6 +30,7 @@
 		B78FAC3716DED9AC00D63E22 /* FlickrPhotoTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = B78FAC3616DED9AC00D63E22 /* FlickrPhotoTVC.m */; };
 		B78FAC3A16DEDB4E00D63E22 /* ImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B78FAC3916DEDB4E00D63E22 /* ImageViewController.m */; };
 		B78FAC4016DEE52200D63E22 /* TagsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B78FAC3F16DEE52200D63E22 /* TagsViewController.m */; };
+		B794821D16E01E4600258F9D /* NetworkActivityIndicatorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B794821C16E01E4600258F9D /* NetworkActivityIndicatorManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -69,6 +70,8 @@
 		B78FAC3916DEDB4E00D63E22 /* ImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageViewController.m; sourceTree = "<group>"; };
 		B78FAC3E16DEE52200D63E22 /* TagsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagsViewController.h; sourceTree = "<group>"; };
 		B78FAC3F16DEE52200D63E22 /* TagsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TagsViewController.m; sourceTree = "<group>"; };
+		B794821B16E01E4600258F9D /* NetworkActivityIndicatorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkActivityIndicatorManager.h; sourceTree = "<group>"; };
+		B794821C16E01E4600258F9D /* NetworkActivityIndicatorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkActivityIndicatorManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -177,6 +180,8 @@
 			children = (
 				B77DCDC216DFC80100A90B3B /* RecentPhotosManager.h */,
 				B77DCDC316DFC80100A90B3B /* RecentPhotosManager.m */,
+				B794821B16E01E4600258F9D /* NetworkActivityIndicatorManager.h */,
+				B794821C16E01E4600258F9D /* NetworkActivityIndicatorManager.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -273,6 +278,7 @@
 				B77DCDC716DFCE2100A90B3B /* FeaturedPhotosViewController.m in Sources */,
 				B77DCDCA16DFCEFA00A90B3B /* RecentPhotosViewController.m in Sources */,
 				B77DCDCD16DFE6E000A90B3B /* AttributedStringViewController.m in Sources */,
+				B794821D16E01E4600258F9D /* NetworkActivityIndicatorManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

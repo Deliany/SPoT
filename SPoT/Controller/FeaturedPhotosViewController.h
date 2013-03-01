@@ -10,4 +10,6 @@
 
 @interface FeaturedPhotosViewController : FlickrPhotoTVC
 
+@property (strong, nonatomic) NSString* tag;
+
 @end

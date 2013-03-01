@@ -34,8 +34,23 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self.refreshControl addTarget:self action:@selector(loadTags) forControlEvents:UIControlEventValueChanged];   
+    [self loadTags];
+}
 
-    self.tagsCountedSet = [FlickrFetcher filteredTags];
+- (void)loadTags
+{
+    [self.refreshControl beginRefreshing];
+    dispatch_queue_t fetchTagsQueue = dispatch_queue_create("fetching tags", NULL);
+    dispatch_async(fetchTagsQueue, ^{
+        self.tagsCountedSet = [FlickrFetcher filteredTags];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[self tableView] reloadData];
+        });
+        
+        [self.refreshControl endRefreshing];
+    });
 }
 
 #pragma mark - Segue
@@ -44,15 +59,12 @@
 {
     if ([sender isKindOfClass:[UITableViewCell class]]) {
         NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
-        UITableViewCell *cell = (UITableViewCell*)sender;
         if (indexPath) {
             if ([segue.identifier isEqualToString:@"Show Featured"]) {
-                if ([segue.destinationViewController respondsToSelector:@selector(setPhotos:)]) {
-                    
-                    NSArray *photos = [FlickrFetcher photosForTag:self.tagsArray[indexPath.row]];
-                    NSArray *sortedPhotos = [photos sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:FLICKR_PHOTO_TITLE ascending:YES]]];
-                    [segue.destinationViewController performSelector:@selector(setPhotos:) withObject:sortedPhotos];
-                    [segue.destinationViewController setTitle:cell.textLabel.text];
+                if ([segue.destinationViewController respondsToSelector:@selector(setTag:)]) {
+                    NSString *tag = self.tagsArray[indexPath.row];
+                    [segue.destinationViewController performSelector:@selector(setTag:) withObject:tag];
+                    [segue.destinationViewController setTitle:tag];
                 }
             }
         }
@@ -70,7 +82,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"TagCell";
+    static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
     cell.textLabel.text = [[self.tagsArray objectAtIndex:indexPath.row] capitalizedString];

@@ -10,6 +10,7 @@
 #import "FlickrFetcher.h"
 #import "RecentPhotosManager.h"
 #import "RecentPhotosViewController.h"
+#import "ImageViewController.h"
 
 @interface FlickrPhotoTVC () <UISplitViewControllerDelegate>
 
@@ -30,14 +31,39 @@
     self.splitViewController.delegate = self;
 }
 
-- (BOOL)splitViewController:(UISplitViewController *)svc
-   shouldHideViewController:(UIViewController *)vc
-              inOrientation:(UIInterfaceOrientation)orientation
+- (void)splitViewController:(UISplitViewController *)svc willHideViewController:(UIViewController *)aViewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)pc
 {
-    return NO;
+    // add the bar button from its toolbar
+    barButtonItem.title = @"Images";
+    [[self splitViewDetailWithBarButtonItem] setSplitViewBarButtonItem:barButtonItem];
+}
+
+- (void)splitViewController:(UISplitViewController *)sender willShowViewController:(UIViewController *)master invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem
+{
+    // remove the bar button from its toolbar
+    [[self splitViewDetailWithBarButtonItem] setSplitViewBarButtonItem:nil];
 }
 
 #pragma mark - Segue
+
+// typical “setSplitViewBarButton:” method
+
+- (id)splitViewDetailWithBarButtonItem
+{
+    id detail = [self.splitViewController.viewControllers lastObject];
+    if (![detail respondsToSelector:@selector(setSplitViewBarButtonItem:)] ||
+        ![detail respondsToSelector:@selector(splitViewBarButtonItem)]) detail = nil;
+    return detail;
+}
+
+- (void)transferSplitViewBarButtonItemToViewController:(id)destinationViewController
+{
+    UIBarButtonItem *splitViewBarButtonItem = [[self splitViewDetailWithBarButtonItem] splitViewBarButtonItem];
+    [[self splitViewDetailWithBarButtonItem] setSplitViewBarButtonItem:nil];
+    if (splitViewBarButtonItem) {
+        [destinationViewController setSplitViewBarButtonItem:splitViewBarButtonItem];
+    }
+}
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
@@ -47,13 +73,12 @@
             if ([segue.identifier isEqualToString:@"Show Image"]) {
                 if ([segue.destinationViewController respondsToSelector:@selector(setImageURL:)]) {
                     
-                    FlickrPhotoFormat format;
+                    FlickrPhotoFormat format = FlickrPhotoFormatLarge;
                     if (([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)) {
+                        [self transferSplitViewBarButtonItemToViewController:segue.destinationViewController];
                         format = FlickrPhotoFormatOriginal;
                     }
-                    else {
-                        format = FlickrPhotoFormatLarge;
-                    }
+
                     NSURL *url = [FlickrFetcher urlForPhoto:self.photos[indexPath.row] format:FlickrPhotoFormatLarge];
                     [segue.destinationViewController performSelector:@selector(setImageURL:) withObject:url];
                     [segue.destinationViewController setTitle:[self titleForRow:indexPath.row]];
@@ -84,17 +109,17 @@
     return [self.photos[row] valueForKeyPath:FLICKR_PHOTO_DESCRIPTION ]; // description because could be NSNull
 }
 
-//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    static NSString *CellIdentifier = @"FeaturedCell";
-//    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-//    
-//    // Configure the cell...
-//    cell.textLabel.text = [self titleForRow:indexPath.row];
-//    cell.detailTextLabel.text = [self subtitleForRow:indexPath.row];
-//    
-//    return cell;
-//}
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *CellIdentifier = @"Cell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    
+    // Configure the cell...
+    cell.textLabel.text = [self titleForRow:indexPath.row];
+    cell.detailTextLabel.text = [self subtitleForRow:indexPath.row];
+    
+    return cell;
+}
 
 
 @end
