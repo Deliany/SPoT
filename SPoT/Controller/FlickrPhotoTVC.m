@@ -90,7 +90,7 @@
                         format = FlickrPhotoFormatOriginal;
                     }
 
-                    NSURL *url = [FlickrFetcher urlForPhoto:self.photos[indexPath.row] format:FlickrPhotoFormatLarge];
+                    NSURL *url = [FlickrFetcher urlForPhoto:self.photos[indexPath.row] format:format];
                     
                     [segue.destinationViewController performSelector:@selector(setImageURL:) withObject:url];
                     [segue.destinationViewController setTitle:[self titleForRow:indexPath.row]];

@@ -173,16 +173,14 @@
 //  no extra unused space
 
 - (void)viewDidLayoutSubviews
-{
-    if (self.scrollView.bounds.size.width == 0 || self.scrollView.bounds.size.height) {
-        return;
-    }
-    
+{    
     CGFloat scaleWidth = self.scrollView.bounds.size.width / self.imageView.bounds.size.width;
     CGFloat scaleHeight = self.scrollView.bounds.size.height / self.imageView.bounds.size.height;
     
-    self.scrollView.minimumZoomScale = MIN(scaleWidth, scaleHeight);
-    self.scrollView.zoomScale = MAX(scaleWidth, scaleHeight);
+    if (!scaleWidth == 0 && !scaleHeight == 0) {
+        self.scrollView.minimumZoomScale = MIN(scaleWidth, scaleHeight);
+        self.scrollView.zoomScale = MAX(scaleWidth, scaleHeight);
+    }
     
     [self centerScrollViewContents];
     
