@@ -1,0 +1,30 @@
+#xcode Noise
+build/*
+*.pbxuser
+*.mode2v3
+*.mode1v3
+*.xcworkspace
+xcuserdata
+
+#Xcode files
+#This ignores everything inside a *.xcodeproj except the project.pbxproj
+*.xcodeproj/
+!*.xcodeproj/project.pbxproj
+*.log
+
+#OS junk files
+[Tt]humbs.db
+*.bak*
+
+# OSX Noise
+.DS_Store
+profile
+*~
+*.lock
+*.DS_Store
+*.swp
+*.out
+
+#Binaries
+DerivedData
+
